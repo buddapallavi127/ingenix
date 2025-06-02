@@ -4,7 +4,6 @@ import { motion, useSpring, useTransform } from 'framer-motion';
 import { Typewriter } from 'react-simple-typewriter';
 import AboutUsBackground from '../assets/image.png';
 
-
 import { useEffect } from 'react';
 import { Target, Eye, Brain, FlaskConical, Zap } from 'lucide-react';
 
@@ -266,44 +265,36 @@ const About = () => {
               </div>
 
               {/* Stats Section */}
-              <div className="mt-20 grid md:grid-cols-3 gap-8">
-                <motion.div
-                  className="text-center"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                >
-                  <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#6E59A5] to-[#8B5CF6] mb-2">
-                    <AnimatedNumber value={50} />+
-                  </div>
-                  <div className="text-gray-400">Successful Projects</div>
-                </motion.div>
-                <motion.div
-                  className="text-center"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                >
-                  <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#6E59A5] to-[#8B5CF6] mb-2">
-                    <AnimatedNumber value={30} />+
-                  </div>
-                  <div className="text-gray-400">Happy Clients</div>
-                </motion.div>
-                <motion.div
-                  className="text-center"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                >
-                  <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#6E59A5] to-[#8B5CF6] mb-2">
-                    <AnimatedNumber value={15} />+
-                  </div>
-                  <div className="text-gray-400">Industry Awards</div>
-                </motion.div>
-              </div>
+              {/* Stats Section */}
+<div className="mt-16 flex flex-col md:flex-row justify-center items-center gap-40">
+  <motion.div
+    className="text-center"
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6 }}
+    viewport={{ once: true, amount: 0.5 }}
+  >
+    <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#6E59A5] to-[#8B5CF6] mb-2">
+      <AnimatedNumber value={50} />+
+    </div>
+    <div className="text-gray-400">Successful Projects</div>
+  </motion.div>
+
+  <motion.div
+    className="text-center"
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay: 0.2 }}
+    viewport={{ once: true, amount: 0.5 }}
+  >
+    <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#6E59A5] to-[#8B5CF6] mb-2">
+      <AnimatedNumber value={30} />+
+    </div>
+    <div className="text-gray-400">Happy Clients</div>
+  </motion.div>
+</div>
+
+
             </motion.div>
           </div>
         </div>
