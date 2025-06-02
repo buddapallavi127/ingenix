@@ -637,36 +637,50 @@ const fetchSectionSpecificNews = async () => {
     // Fetch news for each section
     const sectionUpdates = await Promise.all(
       Object.entries(sectionQueries).map(async ([section, query]) => {
-        const response = await fetch(
-           `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&sortBy=publishedAt&pageSize=3&language=en&apiKey=${apiKey}`
-        );
-        
-        if (!response.ok) throw new Error(`Failed to fetch ${section} news`);
-        const data = await response.json();
-        
-        return {
-          section,
-          articles: data.articles?.map((article: NewsArticle, index: number) => ({
-            id: `api-${section}-${index}-${Date.now()}`,
-            date: new Date(article.publishedAt).toLocaleDateString('en-US', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            }),
-            title: article.title,
-            excerpt: article.description || 'No description available',
-            fullContent: `
-              <p>${article.content || article.description || 'No content available'}</p>
-              ${article.urlToImage ? `<img src="${article.urlToImage}" alt="${article.title}" style="max-width: 100%; border-radius: 8px; margin: 1rem 0;" />` : ''}
-              <p>Source: ${article.source?.name || 'Unknown'}</p>
-              ${article.author ? `<p>Author: ${article.author}</p>` : ''}
-              <p><a href="${article.url}" target="_blank" rel="noopener noreferrer" style="color: #a78bfa;">Read original article</a></p>
-            `,
-            readTime: '4 MIN READ',
-            category: section,
-            image: article.urlToImage || getDefaultImage(section)
-          })) || []
-        };
+        try {
+          const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&sortBy=publishedAt&pageSize=3&language=en&apiKey=${apiKey}`;
+          const response = await fetch(url);
+          
+          if (!response.ok) {
+            throw new Error(`Failed to fetch ${section} news: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          
+          if (!data.articles) {
+            throw new Error(`No articles found for ${section}`);
+          }
+          
+          return {
+            section,
+            articles: data.articles.map((article: NewsArticle, index: number) => ({
+              id: `api-${section}-${index}-${Date.now()}`,
+              date: new Date(article.publishedAt).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }),
+              title: article.title,
+              excerpt: article.description || 'No description available',
+              fullContent: `
+                <p>${article.content || article.description || 'No content available'}</p>
+                ${article.urlToImage ? `<img src="${article.urlToImage}" alt="${article.title}" style="max-width: 100%; border-radius: 8px; margin: 1rem 0;" />` : ''}
+                <p>Source: ${article.source?.name || 'Unknown'}</p>
+                ${article.author ? `<p>Author: ${article.author}</p>` : ''}
+                <p><a href="${article.url}" target="_blank" rel="noopener noreferrer" style="color: #a78bfa;">Read original article</a></p>
+              `,
+              readTime: '4 MIN READ',
+              category: section,
+              image: article.urlToImage || getDefaultImage(section)
+            }))
+          };
+        } catch (err) {
+          console.error(`Error fetching ${section} news:`, err);
+          return {
+            section,
+            articles: [] // Return empty array if fetch fails
+          };
+        }
       })
     );
 
@@ -688,10 +702,8 @@ const fetchSectionSpecificNews = async () => {
     });
 
   } catch (err) {
-    console.error('Full error object:', err);
-    console.error('Error message:', err.message);
-    console.error('Response status:', err.response?.status);
-    setError(`Failed to load news. Details: ${err.message}`);
+    console.error('Error in fetchSectionSpecificNews:', err);
+    setError(`Failed to load news. Please try again later.`);
   } finally {
     setIsLoading(false);
   }
